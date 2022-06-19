@@ -457,31 +457,30 @@ A visualization of \eqref{eq:man_sol} can be seen on figure \ref{fig:man_sol}.
     \label{fig:man_sol}
 \end{figure}
 For all experiments carried out will we define $\alpha  = 1 $. We also choose the penalty parameter $ \gamma = 1$, even though the only requirement according to the results in subsection \ref{ssub:coercitivity} is that $\gamma \ge  \frac{1}{2}$. The
-numerical experiments was done on the mesh discretization illustrated in figure \ref{fig:mesh_discretization}. On the numerical experiments shown on figures \ref{fig:man_conv},  the error norms is shown numerically that there exists a $C > 0$ such
+numerical experiments was done on the mesh discretization illustrated in figure \ref{fig:mesh_discretization}. The FEM software package used in the implementation was gridap  written in the Julia programming language \cite{julia17}.
+On the numerical experiments shown on figures \ref{fig:man_conv},  the error norms is shown numerically that there exists a $C > 0$ such
 that
 \[
  \| u - u_{h} \|_{ L_{2}\left( \Omega  \right)  }^{  } \le  C  h^{p_{1}} \text{ and } \| u - h_{h} \|_{ H^{1}\left( \Omega  \right)  }  \le  C h^{p_{2}}.
 \]
- We could see that for Lagrangian elements with $\mathcal{P}_{k} $ for $k = 2,3$ did the algorithm converge with $p_{1}, p_{2} \approx 2$ and for $k = 4$ was $p_{1} , p_{2} \approx 4$, which was expected.
+ We could see that for Lagrangian elements with $\mathcal{P}_{k} $ for $k = 2,3$ did the algorithm converge with $p_{1}, p_{2} \approx 2$ and for $k = 4$ was $p_{1} , p_{2} \approx 4$.
 
 
 \begin{figure}
 \begin{minipage}{.4\linewidth}
 \centering
-\subfloat[]{\label{main:a}\includegraphics[scale=.15]{figures/refinements/n10.png}}
+\subfloat[]{\label{fig:mesh_discretization:a}\includegraphics[scale=.15]{figures/refinements/n10.png}}
 \end{minipage}%
 \begin{minipage}{.4\linewidth}
 \centering
-\subfloat[]{\label{main:b}\includegraphics[scale=.15]{figures/refinements/n20.png}}
+\subfloat[]{\label{fig:mesh_discretization:b}\includegraphics[scale=.15]{figures/refinements/n20.png}}
 \end{minipage}\par\medskip
 \centering
-\subfloat[]{\label{main:c}\includegraphics[scale=.15]{figures/refinements/n40.png}}
-
+\subfloat[]{\label{fig:mesh_discretization:c}\includegraphics[scale=.15]{figures/refinements/n40.png}}
 \caption{Illustration of mesh discretization on the unit square $\Omega = (0,2 \pi)^{2} \subseteq  \mathbb{R} ^{2}$
-    with triangulation $\mathcal{T} _{h}$. The chosen instances had the diameters $h = \left\{ 2\pi  /10, 2\pi /20,2\pi /40 \right\}$ in figures \ref{main:a},
-    \ref{main:b} and \ref{main:c}.
+    with triangulation $\mathcal{T} _{h}$. The chosen instances had the diameters $h = \left\{ 2\pi  /10, 2\pi /20,2\pi /40 \right\}$ in figures \ref{fig:mesh_discretization:a},
+    \ref{fig:mesh_discretization:b} and \ref{fig:mesh_discretization:c}.
 }
-
 \label{fig:mesh_discretization}
 \end{figure}
 
