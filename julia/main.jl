@@ -1,7 +1,8 @@
 include("biharmonic_equation.jl")
 # import BiharmonicEquation
 using Test
-using Plots; pyplot()
+using GLMakie
+using CairoMakie
 using LaTeXStrings
 using Latexify
 using PrettyTables
@@ -136,13 +137,32 @@ function run_convergence()
 
 end
 
+function plot_makie(x,y,z)
+    set_theme!(colormap = :Hiroshige)
+    fig = Figure()
+    ax3d = Axis3(fig[1, 1]; aspect = (1, 1, 1),
+        perspectiveness = 0.5, azimuth = 2.19, elevation = 0.57)
+    ax2d = Axis(fig[1, 2]; aspect = 1)
+    pltobj = surface!(ax3d, x, y, z; transparency = true)
+    heatmap!(ax2d, x, y, z; colormap = (:Hiroshige, 0.5))
+    contour!(ax2d, x, y, z; linewidth = 2, levels = 12, color = :black)
+    contour3d!(ax3d, x, y, z; linewidth = 4, levels = 12, transparency = true)
+    Colorbar(fig[1, 3], pltobj)
+    colsize!(fig.layout, 1, Aspect(1, 1.0))
+    colsize!(fig.layout, 2, Aspect(1, 1.0))
+    # resize_to_layout!(fig)
+    save("figures/plot_makie.png", fig)
+    display(fig)
+
+end
+
 function full_graph()
 
     gammas = collect( 1:2:80 )
     ns= [2^3,2^4,2^5,2^6,2^7]
     ns= [2^3,2^4,2^5, 2^6]
     hs = 1 .//ns
-    order=2
+    order=3
 
     function inflate_tuple(f, xs, ys)
         Nx = length(xs)
@@ -170,23 +190,16 @@ function full_graph()
 
     L2, H1 = inflate_tuple(compute_error, ns, gammas)
 
-    p1 = Plots.plot(gammas, hs,L2,st=:surface,
-                    yaxis=:log, zaxis=:log,
-                    xlabel = "γ", ylabel="h", zlabel="L2",
-                    camera=(0,30))
-    # p2  = PlotlyJS.plot([p1])
-
-
-    display(p1)
-
-    # println(L2, H1)
-
+    plot_makie(hs, gammas, L2)
 end
+
 
 function main()
-    # example()
 
-    # run_convergence()
     full_graph()
+    # run_examples()
+    # run_convergence()
 end
+
 main()
+
