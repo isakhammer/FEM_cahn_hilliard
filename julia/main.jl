@@ -1,6 +1,7 @@
 include("biharmonic_equation.jl")
+# import BiharmonicEquation
 using Test
-using Plots
+using Plots; pyplot()
 using LaTeXStrings
 using Latexify
 using PrettyTables
@@ -73,6 +74,7 @@ function run_examples(dirname)
         sol = BiharmonicEquation.run_CP_method(ss=ss,u=u)
         BiharmonicEquation.generate_vtk(ss=ss,sol=sol,dirname=ndir(n))
         @test sol.el2 < 10^-1
+        println("error", sol.el2)
     end
 end
 
@@ -107,12 +109,14 @@ function convergence_analysis(;dirname, orders = [2,3,4], γs = [5, 25, 60], ns 
 
 end
 
-function main()
+function example()
+    folder = "biharmonic_equation_results"
+    exampledir = folder*"/example"
+    makedir(folder)
+    run_examples(exampledir)
+end
 
-    # folder = "biharmonic_equation_results"
-    # exampledir = folder*"/example"
-    # makedir(folder)
-    # run_examples(exampledir)
+function run_convergence()
 
     println("Generating figures")
     figdir = "figures"
@@ -132,4 +136,57 @@ function main()
 
 end
 
+function full_graph()
+
+    gammas = collect( 1:2:80 )
+    ns= [2^3,2^4,2^5,2^6,2^7]
+    ns= [2^3,2^4,2^5, 2^6]
+    hs = 1 .//ns
+    order=2
+
+    function inflate_tuple(f, xs, ys)
+        Nx = length(xs)
+        Ny = length(ys)
+        A1 = zeros((Nx,Ny))
+        A2 = zeros((Nx,Ny))
+        for i in 1:Nx
+            for j in 1:Ny
+                println("It: ", (i-1)*Ny + j, " of ", Ny*Nx)
+                A1[i,j], A2[i,j] = f(xs[i], ys[j])
+            end
+        end
+        return A1,  A2
+    end
+
+    function compute_error(n, γ)
+        L=2π
+        m,r = 1,1
+        u(x) = cos(m*( 2π/L )*x[1])*cos(r*( 2π/L )*x[2])
+        ss = BiharmonicEquation.generate_square_spaces(n=n, L=L, γ=γ, order=order)
+        sol = BiharmonicEquation.run_CP_method(ss=ss, u=u)
+        println("γ: ",γ, " n: ", n ," L2-error ", sol.el2 )
+        return sol.el2, sol.eh1
+    end
+
+    L2, H1 = inflate_tuple(compute_error, ns, gammas)
+
+    p1 = Plots.plot(gammas, hs,L2,st=:surface,
+                    yaxis=:log, zaxis=:log,
+                    xlabel = "γ", ylabel="h", zlabel="L2",
+                    camera=(0,30))
+    # p2  = PlotlyJS.plot([p1])
+
+
+    display(p1)
+
+    # println(L2, H1)
+
+end
+
+function main()
+    # example()
+
+    # run_convergence()
+    full_graph()
+end
 main()
